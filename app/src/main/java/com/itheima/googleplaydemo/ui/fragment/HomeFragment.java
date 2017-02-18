@@ -50,7 +50,7 @@ public class HomeFragment extends BaseAppListFragment {
     @Override
     protected View onCreateHeaderView() {
         FunBanner banner = new FunBanner(getContext());
-        //设置图片的宽高比
+        //设置图片的高宽比
         banner.setRatio(0.377f);
         //设置自动轮播
         banner.setEnableAutoLoop(true);

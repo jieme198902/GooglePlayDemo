@@ -288,10 +288,7 @@ public class DownloadManager {
      * 处理下载的动作
      */
     public void handleDownloadAction(Context context, String packageName) {
-        processByStatus(context, getDownloadInfo(packageName));
-    }
-
-    private void processByStatus(Context context, DownloadInfo downloadInfo) {
+        DownloadInfo downloadInfo = getDownloadInfo(packageName);
         switch (downloadInfo.getDownloadStatus()) {
             case STATE_UN_DOWNLOAD:
                 download(downloadInfo);

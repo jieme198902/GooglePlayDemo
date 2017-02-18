@@ -54,7 +54,7 @@ public class AppDetailDesView extends RelativeLayout {
     public void bindView(AppDetailBean appDetailBean) {
         mAppDetailAuthor.setText(appDetailBean.getAuthor());
         mAppDetailDes.setText(appDetailBean.getDes());
-        mAppDetailDes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 mAppDetailDes.getViewTreeObserver().removeGlobalOnLayoutListener(this);

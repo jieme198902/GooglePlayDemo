@@ -3,7 +3,6 @@ package com.itheima.googleplaydemo.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -82,14 +81,7 @@ public class AppDetailSecurityView extends RelativeLayout {
             line.addView(tvDes);
 
             mAppDetailSecurityDes.addView(line);
-            collapseAppDetailSecurity();
         }
-    }
-
-    private void collapseAppDetailSecurity() {
-        ViewGroup.LayoutParams layoutParams = mAppDetailSecurityDes.getLayoutParams();
-        layoutParams.height = 0;
-        mAppDetailSecurityDes.setLayoutParams(layoutParams);
     }
 
     @OnClick(R.id.app_detail_security_arrow)

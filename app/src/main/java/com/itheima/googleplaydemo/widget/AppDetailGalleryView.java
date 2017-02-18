@@ -44,8 +44,10 @@ public class AppDetailGalleryView extends FrameLayout {
             String screen = appDetailBean.getScreen().get(i);
             ImageView imageView = new ImageView(getContext());
             int padding = getResources().getDimensionPixelSize(R.dimen.app_detail_pic_padding);
-            if (i != appDetailBean.getScreen().size() - 1) {
-                imageView.setPadding(0, 0, padding, 0);
+            if (i == appDetailBean.getScreen().size() - 1) {
+                imageView.setPadding(padding, 0, padding, 0);
+            } else {
+                imageView.setPadding(padding, 0, 0, 0);
             }
             Glide.with(getContext()).load(Constant.URL_IMAGE + screen).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).into(imageView);
             mAppDetailPicContainer.addView(imageView);

@@ -1243,7 +1243,7 @@ DownloadManger完成对应用下载的管理，使用单例模式。
 
 
 ## 下载数据结构 DownloadInfo##
-由于下载一个app的过程中会产成很多数据，包括下载app的名字，下载的进度，下载的状态等，这里构建一个描述下载一个app的数据结构。
+由于下载一个app的过程中会产成很多数据，包括下载app的名字，下载的进度，下载的状态等，这里构建一个描述下载一个app的数据结构。另外在app列表界面和app详情界面需要共享一个应用的下载信息的。
 	
 	public class DownloadInfo {
 	    private String packageName;
@@ -1517,6 +1517,59 @@ DownloadManger完成对应用下载的管理，使用单例模式。
          download(downloadInfo);
          break;
 
+# CircleDownloadView的实现 #
+
+
+## 同步状态
+    public void syncState(AppListItem item) {
+        //由于ListView回收的影响，如果mDownloadInfo不为空则表示CircleDownload之前监听过其他app的下载
+        if (mDownloadInfo != null) {
+            //移除之前的监听
+            DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
+        }
+        mDownloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
+        //添加新的监听
+		DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
+        updateStatus(mDownloadInfo);
+    }
+
+## 更新状态 ##
+
+    private void updateStatus(DownloadInfo downloadInfo) {
+        //移除掉原来的observer之后，还有一些残余的runnable没有执行，将残余的更新过滤掉
+        if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
+            return;
+        }
+        mDownloadInfo = downloadInfo;
+		.....
+
+    }
+
+## 初始化圆形进度条的矩形 ##
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mRectF.left = mIcon.getLeft() - 3;
+        mRectF.top = mIcon.getTop() - 3;
+        mRectF.right = mIcon.getRight() + 3;
+        mRectF.bottom = mIcon.getBottom() + 3;
+        mRectF.set(left, top, right, bottom);
+
+    }
+
+
+## 绘制 ##
+
+    //一般情况下自定义的ViewGroup不会绘制自己，除非给它设置背景，所以我们打开绘制自定义ViewGroup的开关
+   	setWillNotDraw(false);
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (enableProgress) {
+            float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getSize()) * 360;
+            canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
+        }
+    }
+
 
 # 多线程下载 #
 
@@ -1715,60 +1768,6 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
         downloadInfo.setDownloadStatus(STATE_UN_DOWNLOAD);
         notifyObservers(downloadInfo);
     }
-
-# CircleDownloadView的实现 #
-
-
-## 同步状态
-    public void syncState(AppListItem item) {
-        //由于ListView回收的影响，如果mDownloadInfo不为空则表示CircleDownload之前监听过其他app的下载
-        if (mDownloadInfo != null) {
-            //移除之前的监听
-            DownloadManager.getInstance().removeObserver(mDownloadInfo.getPackageName());
-        }
-        mDownloadInfo = DownloadManager.getInstance().initDownloadInfo(getContext(), item.getPackageName(), item.getSize(), item.getDownloadUrl());
-        //添加新的监听
-		DownloadManager.getInstance().addObserver(mDownloadInfo.getPackageName(), this);
-        updateStatus(mDownloadInfo);
-    }
-
-## 更新状态 ##
-
-    private void updateStatus(DownloadInfo downloadInfo) {
-        //移除掉原来的observer之后，还有一些残余的runnable没有执行，将残余的更新过滤掉
-        if (!downloadInfo.getPackageName().equals(mDownloadInfo.getPackageName())) {
-            return;
-        }
-        mDownloadInfo = downloadInfo;
-		.....
-
-    }
-
-## 初始化圆形进度条的矩形 ##
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        mRectF.left = mIcon.getLeft() - 3;
-        mRectF.top = mIcon.getTop() - 3;
-        mRectF.right = mIcon.getRight() + 3;
-        mRectF.bottom = mIcon.getBottom() + 3;
-        mRectF.set(left, top, right, bottom);
-
-    }
-
-
-## 绘制 ##
-
-    //一般情况下自定义的ViewGroup不会绘制自己，除非给它设置背景，所以我们打开绘制自定义ViewGroup的开关
-   	setWillNotDraw(false);
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        if (enableProgress) {
-            float sweepAngle = (mDownloadInfo.getProgress() * 1.0f / mDownloadInfo.getSize()) * 360;
-            canvas.drawArc(mRectF, -90, sweepAngle, false, mPaint);
-        }
-    }
-
 
 # 缓存 #
 ## Why? ##

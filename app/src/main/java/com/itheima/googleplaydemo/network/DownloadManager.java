@@ -176,6 +176,7 @@ public class DownloadManager {
         if (file.exists()) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            //启动安装器打开apk文件
             context.startActivity(intent);
         }
     }

@@ -1783,6 +1783,7 @@ Android中耗时的操作，都会开子线程，线程的创建和销毁是要�
 Cache-Control 是最重要的规则。这个字段用于指定所有缓存机制在整个请求/响应链中必须服从的指令。缓存指令是单向的，即请求中存在一个指令并不意味着响应中将存在同一个指令。
 
 * [Header Field Definitions](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
+
 ### 配置OKhttp的缓存目录 ###
     public void init(Context context) {
 		//指定缓存路径

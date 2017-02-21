@@ -237,12 +237,9 @@ public class DownloadManager {
                 e.printStackTrace();
                 //更新状态下载失败
                 updateStatus(STATE_FAILED);
-                if (inputStream != null) {
-                    closeStream(inputStream);
-                }
-                if (fileOutputStream != null) {
-                    closeStream(fileOutputStream);
-                }
+            } finally {
+                closeStream(inputStream);
+                closeStream(fileOutputStream);
             }
         }
 
@@ -254,10 +251,12 @@ public class DownloadManager {
 
 
     private void closeStream(Closeable closeable) {
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
